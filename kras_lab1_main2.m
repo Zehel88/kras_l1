@@ -50,6 +50,7 @@ function kras_lab1_main2_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
+ 
 
 % ====================================================================
 syms p1 p2
