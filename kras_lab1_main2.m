@@ -22,7 +22,7 @@ function varargout = kras_lab1_main2(varargin)
 
 % Edit the above text to modify the response to help kras_lab1_main2
 
-% Last Modified by GUIDE v2.5 07-Dec-2015 12:49:02
+% Last Modified by GUIDE v2.5 07-Dec-2015 20:23:23
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -45,17 +45,20 @@ end
 
 
 % --- Executes just before kras_lab1_main2 is made visible.
-function kras_lab1_main2_OpeningFcn(hObject, eventdata, handles, varargin)
+function [X Y Z]=kras_lab1_main2_OpeningFcn(hObject, eventdata, handles, varargin)
 
 handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
- 
+
+clc
+
 
 % ====================================================================
 syms p1 p2
 % Заданная функция
-f=6*p1^2-5*p1*p2+2*p2^2+3*p1^3;
+% f=6*p1^2-5*p1*p2+2*p2^2+3*p1^3;
+f=7*p1^2+4*p1*p2+p2^2-p2^3;
 %% Нахождение критических точек заданной функции
 % Частные производные
 dfdp1=diff(f,p1);
@@ -73,16 +76,23 @@ f_z=in_f(xp1(2),xp2(2));
 x=-1:0.05:1;
 y=-1:0.05:1;
 [X,Y]=meshgrid(x,y);
-Z=X.*Y.*-5.0+X.^2.*6.0+X.^3.*3.0+Y.^2.*2.0;
+Z=7.*X.^2+4.*X.*Y+Y.^2-Y.^3;
+% Z=X.*Y.*-5.0+X.^2.*6.0+X.^3.*3.0+Y.^2.*2.0;
+
 axes(handles.axes1)
 contour(X,Y,Z,[f_z f_z]);grid on;hold on;
+
 % Вписываем окружность, как многообразие с простым атласом
-CR=0.2;
-plotCircle(0,0, CR);xlabel(['Многообразие и окружность M_0=S^1(0,',num2str(CR),')']);
+% CR=0.2;
+CR=0.27;
+plotCircle(0,0,CR);xlabel(['Рис.1 ','Многообразие и окружность M_0=S^1(0,',num2str(CR),')']);
+
+
 %% Находим коэффициент пропорциональности
 syms a1 x1 x2 y1 a2 z1
 % Ф-я в локальных координатах карты 1
 fa1=subs(f,[p1 p2],[a1.*y1 a1.*sqrt(CR^2-y1.^2)]);
+
 % Нахождение коэф. пропорц. для 1 карты
 j=1;
 for i=-CR:(2*CR/50):CR
@@ -95,6 +105,7 @@ for i=-CR:(2*CR/50):CR
 end
 % Ф-я в локальных координатах карты 2
 fa2=subs(f,[p1 p2],[a2.*sqrt(CR^2-z1.^2) a2.*z1]);
+
 % Нахождение коэф. пропорц. для 2 карты
 j=1;
 for i=-CR:(2*CR/50):CR
@@ -112,38 +123,46 @@ plot(k1,a1);grid on;xlabel({'Коэф. пропорциональности ','для карты (U_{1},\phi_{
 axes(handles.axes7)
 plot(k2,a2);grid on;xlabel({'Коэф. пропорциональности ','для карты (U_{2},\phi_{2})'});
 
-% Построение функции вre координатном пространстве {G1(y),y}
+% Построение функции в координатном пространстве {G1(y),y}
 axes(handles.axes2)
-fy=-1:2/50:1;
+fy=-CR:(2*CR/50):CR;
 % fy=sqrt(CR^2-y.^2);
 for i=1:numel(fy)
-G1(i)=a1(i)^4*fy(i)^3*sqrt(CR^2-fy(i)^2)+a1(i)^3*(CR^2-fy(i)^2)*fy(i)-a1(i)^5*(CR^2-fy(i)^2)^(5/2);
+% G1(i)=a1(i)^4*fy(i)^3*sqrt(CR^2-fy(i)^2)+a1(i)^3*(CR^2-fy(i)^2)*fy(i)-a1(i)^5*(CR^2-fy(i)^2)^(5/2);
+G1(i)=7.*(a1(i).*fy(i)).^2+4.*(a1(i).*fy(i)).*(a1(i)*sqrt(CR^2-fy(i).^2))+(a1(i)*sqrt(CR^2-fy(i).^2)).^2-(a1(i)*sqrt(CR^2-fy(i).^2)).^3;
 end
-% G1=6*a^2.*y.^2-5*a^2.*y.*sqrt(CR^2-y.^2)+2*a^2.*(CR^2-y.^2)+3*a^3.*y.^3;
+
 plot(fy,G1);grid on;
 xlabel({'График функции F(p)',' в координатах карты (U_{1},\phi_{1})'})
 
 % Построение функции в координатном пространстве {G2(z),z}
 axes(handles.axes3)
-fz=-1:2/50:1;
+fz=-CR:(2*CR/50):CR;
 % fz=sqrt(CR^2-z.^2);
 for i=1:numel(fz)
-G2(i)=a2(i)^4*fz(i)*(CR^2-fz(i)^2)^(3/2)+a2(i)^3*fz(i)^2*sqrt(CR^2-fz(i)^2)-a2(i)^5*fz(i)^5;
+% G2(i)=a2(i)^4*fz(i)*(CR^2-fz(i)^2)^(3/2)+a2(i)^3*fz(i)^2*sqrt(CR^2-fz(i)^2)-a2(i)^5*fz(i)^5;
+G2(i)=7.*(a2(i)*(sqrt(CR^2-fz(i)^2))).^2+4.*(a2(i)*(sqrt(CR^2-fz(i)^2))).*(a2(i)*fz(i)^2)+(a2(i)*fz(i)^2).^2-(a2(i)*fz(i)^2).^3;
 end
-% G2=6*a^2.*(CR^2-z.^2)-5*a^2.*(CR^2-z.^2).*z+2*a^2.*z.^2+3*a^3.*(CR^2-z.^2).^(3/2);
+
 plot(fz,G2);grid on;
 xlabel({'График функции F(p)' ,'в координатах карты  (U_{2},\phi_{2})'})
 
 % Функция для задания 3
-x_range=-1:0.05:1;
-y_range=-1:0.05:1;
-[p31,p32] = meshgrid(x_range,y_range);
+% x_range=-1:0.05:1;
+% y_range=-1:0.05:1;
+% [p31,p32] = meshgrid(x_range,y_range);
 
-f3=p31.^3.*p32+p32.^2.*p31-p32.^5;
-% f3=6.*p31.^2-5.*p31.*p32+2.*p32.^2+3.*p31.^3;
-axes(handles.axes5)
-mesh(p31,p32,f3,'UIContextMenu',f2pCM2);
-xlabel('График функции F(p)                     ')
+% f3=p31.^3.*p32+p32.^2.*p31-p32.^5;
+% % f3=6.*p31.^2-5.*p31.*p32+2.*p32.^2+3.*p31.^3;
+% axes(handles.axes5)
+% mesh(p31,p32,f3,'UIContextMenu',f2pCM2);
+% xlabel('График функции F(p)                     ')
+
+DaTa.X=X;
+DaTa.Y=Y;
+DaTa.Z=Z;
+
+save('DaTa.mat','DaTa');
 
 
 % UIWAIT makes kras_lab1_main2 wait for user response (see UIRESUME)
@@ -155,6 +174,7 @@ plot(xc + R * cos(0:0.001:2*pi), yc + R * sin(0:0.001:2*pi));
 function cmHandle = f2pCM2(n_con)
    cmHandle = uicontextmenu;
    uimenu(cmHandle,'Label','Построить в отдельном окне','Callback',@newfigureplot2);
+   
 function newfigureplot2(x1,x2)
 
 h=gco;
@@ -189,5 +209,28 @@ function varargout = kras_lab1_main2_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 
 
-% -----------------------INFOBTN------------------------------
-function infobtn_ClickedCallback(hObject, eventdata, handles)
+% --------------------------------------------------------------------
+function NFP_Callback(hObject, eventdata, handles)
+% hObject    handle to NFP (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function Untitled_6_Callback(hObject, eventdata, handles,X)
+% hObject    handle to Untitled_6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% --------------------------------------------------------------------
+function Untitled_7_Callback(hObject, eventdata, handles)
+% hObject    handle to Untitled_7 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function Untitled_8_Callback(hObject, eventdata, handles)
+% hObject    handle to Untitled_8 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
