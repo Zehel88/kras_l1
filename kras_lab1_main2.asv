@@ -80,7 +80,7 @@ axes(handles.axes1)
 contour(X,Y,Z,[f_z f_z]);grid on;hold on;
 % Вписываем окружность, как многообразие с простым атласом
 CR=0.2;
-plotCircle(0,0, CR);xlabel(['Многообразие и окружность M_0=S^1(0,',num2str(CR),')']);
+plotCircle(0,0, CR);xlabel({'Многообразие и окружность');
 return
 % Находим коэффициент пропорциональности
 syms a1 x1 x2 y1 a2 z1
