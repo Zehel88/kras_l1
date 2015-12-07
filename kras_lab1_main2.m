@@ -22,7 +22,7 @@ function varargout = kras_lab1_main2(varargin)
 
 % Edit the above text to modify the response to help kras_lab1_main2
 
-% Last Modified by GUIDE v2.5 07-Dec-2015 11:24:10
+% Last Modified by GUIDE v2.5 07-Dec-2015 12:49:02
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -111,7 +111,7 @@ plot(k1,a1);grid on;xlabel({'Коэф. пропорциональности ','для карты (U_{1},\phi_{
 axes(handles.axes7)
 plot(k2,a2);grid on;xlabel({'Коэф. пропорциональности ','для карты (U_{2},\phi_{2})'});
 
-% Построение функции в координатном пространстве {G1(y),y}
+% Построение функции вre координатном пространстве {G1(y),y}
 axes(handles.axes2)
 fy=-1:2/50:1;
 % fy=sqrt(CR^2-y.^2);
@@ -190,4 +190,3 @@ varargout{1} = handles.output;
 
 % -----------------------INFOBTN------------------------------
 function infobtn_ClickedCallback(hObject, eventdata, handles)
-
