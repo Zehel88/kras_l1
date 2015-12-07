@@ -54,23 +54,20 @@ guidata(hObject, handles);
 % ====================================================================
 syms p1 p2
 % Заданная функция
-f=6*p1^2-5*p1*p2+2*p2^2+3*p1^3
+f=6*p1^2-5*p1*p2+2*p2^2+3*p1^3;
+%% Нахождение критических точек заданной функции
 % Частные производные
-dfdp1=diff(f,p1)
-dfdp2=diff(f,p2)
+dfdp1=diff(f,p1);
+dfdp2=diff(f,p2);
 % Поиск нулей
 Sres=solve(dfdp1,dfdp2);
-xp1=double(Sres.p1)
-xp2=double(Sres.p2)
+xp1=double(Sres.p1);
+xp2=double(Sres.p2);
 % Выбор подходящих решений ( не 0 / не комплексные )
-
-% % Проверка найденных решений
-% subs(subs(dfdp1,p1,xp1(2)),p2,xp2(2))
-% subs(subs(dfdp2,p1,xp1(2)),p2,xp2(2))
-
+%% Построение линии уровня 
 % Находим значение функции в критической точке
 in_f=inline(f);
-f_z=in_f(xp1(2),xp2(2))
+f_z=in_f(xp1(2),xp2(2));
 % Cтроим линию уровня соответствующую найденному значению
 x=-1:0.05:1;
 y=-1:0.05:1;
@@ -80,43 +77,45 @@ axes(handles.axes1)
 contour(X,Y,Z,[f_z f_z]);grid on;hold on;
 % Вписываем окружность, как многообразие с простым атласом
 CR=0.2;
-plotCircle(0,0, CR);xlabel({'Многообразие и окружность');
-return
-% Находим коэффициент пропорциональности
+plotCircle(0,0, CR);xlabel(['Многообразие и окружность M_0=S^1(0,',num2str(CR),')']);
+%% Находим коэффициент пропорциональности
 syms a1 x1 x2 y1 a2 z1
-
-fa1=subs(f,[p1 p2],[a1.*y1 a1.*sqrt(CR^2-y1.^2)])
-
+% Ф-я в локальных координатах карты
+fa1=subs(f,[p1 p2],[a1.*y1 a1.*sqrt(CR^2-y1.^2)]);
+% Нахождение коэф. пропорц. для 1 карты
 j=1;
 for i=-CR:(2*CR/50):CR
     fi1=subs(fa1-CR,y1,i);
-    
     r=roots(sym2poly(fi1));
     t1=find(r>0);
     a1(j)=min(r(t1));
-    j=j+1;
-    
+    k1(j)=i;
+    j=j+1; 
 end
-
-fa2=subs(f,[p1 p2],[a2.*sqrt(CR^2-z1.^2) a2.*z1])
+% Ф-я в локальных координатах карты
+fa2=subs(f,[p1 p2],[a2.*sqrt(CR^2-z1.^2) a2.*z1]);
 
 j=1;
-for i=CR:-(2*CR/50):-CR
+for i=-CR:(2*CR/50):CR
     fi2=subs(fa2-CR,z1,i);
     
     r=roots(sym2poly(fi2));
     t1=find(r>0);
     a2(j)=min(r(t1));
+    k2(j)=i;
     j=j+1;
+    
     
 end
 
 
 axes(handles.axes6)
-plot(a1);grid on;xlabel({'Коэф. пропорциональности ','для карты (U_{1},\phi_{1})'});
+plot(k1,a1);grid on;xlabel({'Коэф. пропорциональности ','для карты (U_{1},\phi_{1})'});
 
 axes(handles.axes7)
-plot(a2);grid on;xlabel({'Коэф. пропорциональности ','для карты (U_{2},\phi_{2})'});
+plot(k2,a2);grid on;xlabel({'Коэф. пропорциональности ','для карты (U_{2},\phi_{2})'});
+
+
 
 % Построение функции в координатном пространстве {G1(y),y}
 axes(handles.axes2)
