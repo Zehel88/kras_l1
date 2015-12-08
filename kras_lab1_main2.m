@@ -239,4 +239,4 @@ function Untitled_8_Callback(hObject, eventdata, handles)
 % -------------------Theory------------------------
 function Teo_Callback(hObject, eventdata, handles)
 % Открываем док MuPad
-open('Kras_lab1_teo.mn');
+open('Kras_lab1_teo.doc');
