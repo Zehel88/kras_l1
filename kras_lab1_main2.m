@@ -22,7 +22,7 @@ function varargout = kras_lab1_main2(varargin)
 
 % Edit the above text to modify the response to help kras_lab1_main2
 
-% Last Modified by GUIDE v2.5 07-Dec-2015 20:23:23
+% Last Modified by GUIDE v2.5 08-Dec-2015 16:10:05
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -234,3 +234,9 @@ function Untitled_8_Callback(hObject, eventdata, handles)
 % hObject    handle to Untitled_8 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% -------------------Theory------------------------
+function Teo_Callback(hObject, eventdata, handles)
+% Открываем док MuPad
+open('Kras_lab1_teo.mn');
