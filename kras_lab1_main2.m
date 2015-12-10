@@ -79,7 +79,10 @@ contour(X,Y,Z,[f_z f_z]);grid on;hold on;
 
 % Описываем окружностью, как многообразием с простым атласом
 CR=0.2;
-plotCircle(0,0,CR);xlabel(['Многообразие и окружность M_0=S^1(0,',num2str(CR),')']);
+plotCircle(0,0,CR);xlabel({'x_1,p_1',['Многообразие и окружность M_0=S^1(0,',num2str(CR),')']});
+ylabel('x_2,p_2');
+DaTa.X=X; DaTa.Y=Y; DaTa.Z=Z; DaTa.f_z=f_z; 
+DaTa.CR=CR;
 
 %% Находим коэффициент пропорциональности
 % Кол-во точек
@@ -114,8 +117,8 @@ y=x1;
 
 % Построение гарфика коэф. проп 1 карты
 axes(handles.axes6)
-plot(y,a);grid on;xlabel({'Коэф. пропорциональности ','для карты (U_{1},\phi_{1})'});
-
+plot(y,a);grid on;xlabel({'y','Коэф. пропорциональности ','для карты (U_{1},\phi_{1})'});
+ylabel('\alpha(y)');
 %% Построение функции в координатном пространстве {G1(y),y}
 axes(handles.axes8)
 
@@ -124,7 +127,8 @@ p2=a.*sqrt(CR^2-y.^2);
 G1=6.*p1.^2-5.*p1.*p2+2.*p2.^2+p1.^3;
 
 plot(y,G1);grid on;
-xlabel({'График функции F(p)',' в координатах карты (U_{1},\phi_{1})'});
+xlabel({'y','График функции F(p)',' в координатах карты (U_{1},\phi_{1})'});
+ylabel('G_1(y)');
 hold on
 
 
@@ -156,8 +160,8 @@ end
 z=x2;
 % Построение гарфика коэф. проп 2 карты
 axes(handles.axes7)
-plot(z,b);grid on;xlabel({'Коэф. пропорциональности ','для карты (U_{2},\phi_{2})'});
-
+plot(z,b);grid on;xlabel({'z','Коэф. пропорциональности ','для карты (U_{2},\phi_{2})'});
+ylabel('\beta(z)');
 
 
 %% Построение функции в координатном пространстве {G2(z),z}
@@ -167,37 +171,20 @@ p2=b.*z;
 G2=6.*p1.^2-5.*p1.*p2+2.*p2.^2+p1.^3;
 axes(handles.axes2)
 plot(z,G2);grid on;
-xlabel({'График функции F(p)' ,'в координатах карты  (U_{2},\phi_{2})'})
-%% 
-% 
-% axes(handles.axes2)
-% y=CR.*cos(pi:-pi/n:0);
-% numel(a)
-% numel(y)
-% p_1=a.*y;
-% p_2=a.*(sqrt(CR^2-y.^2));
-% G_1=7.*p_1.^2+4.*p_1.*p_2+p_2.^2-p_2.^3;
-% 
-% plot(y,G_1);
-% grid on
-% 
-% axes(handles.axes3)
-% z=CR.*sin(pi/2:-pi/n:-pi/2);
-% 
-% p__1=b.*(sqrt(CR^2-z.^2));
-% p__2=b.*z;
-% figure(1)
-% plot(p__1)
-% figure(2)
-% plot(p__2)
-% G_2=7.*p__1.^2+4.*p__1.*p__2+p__2.^2-p__2.^3;
-% 
-% plot(z,G_2);
-% grid on
-% 
-% DaTa.a=a;
-% DaTa.b=b;
-% save('DaTa.mat','DaTa');
+xlabel({'z','График функции F(p)' ,'в координатах карты  (U_{2},\phi_{2})'})
+ylabel('G_2(z)');
+%% Построение графиков функций f(p) в координатных пространствах {G2(z),z},{G1(y),y}
+axes(handles.axes3)
+plot(z,G2);grid on;hold on;
+plot(y,G1);
+xlabel({'y,z','Графики f(p)' ,'в коорд. просранствах  (G2(z),z),(G1(y),y)'})
+ylabel('G_1(y),G_2(z)');
+
+%% Сохранение необходимых данных 
+DaTa.a=a; DaTa.b=b;
+DaTa.y=y; DaTa.z=z;
+DaTa.G1=G1; DaTa.G2=G2;
+save('DaTa.mat','DaTa');
 
 %% 
 % Функция для задания 3
@@ -225,33 +212,6 @@ function plotCircle (xc, yc, R)
 plot(xc + R * cos(0:0.001:2*pi), yc + R * sin(0:0.001:2*pi));
 
 
-function cmHandle = f2pCM2(n_con)
-   cmHandle = uicontextmenu;
-   uimenu(cmHandle,'Label','Построить в отдельном окне','Callback',@newfigureplot2);
-   
-function newfigureplot2(x1,x2)
-
-h=gco;
-figure;
-if (isempty(h.ZData)==0)
-mesh(h.XData,h.YData,h.ZData);
-else
-    load('f2p.mat');
-    load('Pref.mat');
-    contour(h.XData,h.YData,f2p.func2plot,Pref{3,2});hold on;
-    quiver(h.XData,h.YData,h.UData,h.VData);hold on;
-    gr = gradient(f2p.func2plot,.5,.5);
-
-[zero_grad_ind_x,zero_grad_ind_y]=find(gr==0);
-x_range=Pref{4,2};y_range=Pref{5,2};
-
-     for i=1:numel(zero_grad_ind_y)
-         plot(x_range(zero_grad_ind_y(i)),y_range(zero_grad_ind_x(i)),'*');
-         hold on;
-     end
-    hold off;
-end
-
 % --- Outputs from this function are returned to the command line.
 function varargout = kras_lab1_main2_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
@@ -269,26 +229,25 @@ function NFP_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-
-% --------------------------------------------------------------------
+%% Построение на отдельных фаормах 
+% ----------------Puc 1-----------------------------------
 function Untitled_6_Callback(hObject, eventdata, handles,X)
-% hObject    handle to Untitled_6 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+load('DaTa.mat');
+figure(1)
+contour(DaTa.X,DaTa.Y,DaTa.Z,[DaTa.f_z DaTa.f_z]);grid on;hold on;
+plotCircle(0,0,DaTa.CR);xlabel(['Многообразие и окружность M_0=S^1(0,',num2str(DaTa.CR),')']);
 
-% --------------------------------------------------------------------
+% ----------------------Puc 2-----------------------------------
 function Untitled_7_Callback(hObject, eventdata, handles)
-% hObject    handle to Untitled_7 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
+load('DaTa.mat');
+figure(2)
+plot(DaTa.y,DaTa.a);grid on;xlabel({'Коэф. пропорциональности ','для карты (U_{1},\phi_{1})'});
 
 % --------------------------------------------------------------------
 function Untitled_8_Callback(hObject, eventdata, handles)
-% hObject    handle to Untitled_8 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
+load('DaTa.mat');
+figure(3)
+plot(DaTa.z,DaTa.b);grid on;xlabel({'Коэф. пропорциональности ','для карты (U_{1},\phi_{1})'});
 
 % -------------------Theory------------------------
 function Teo_Callback(hObject, eventdata, handles)
