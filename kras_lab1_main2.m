@@ -22,7 +22,7 @@ function varargout = kras_lab1_main2(varargin)
 
 % Edit the above text to modify the response to help kras_lab1_main2
 
-% Last Modified by GUIDE v2.5 08-Dec-2015 16:10:05
+% Last Modified by GUIDE v2.5 10-Dec-2015 21:54:12
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -79,7 +79,8 @@ contour(X,Y,Z,[f_z f_z]);grid on;hold on;
 
 % Описываем окружностью, как многообразием с простым атласом
 CR=0.2;
-plotCircle(0,0,CR);xlabel({'x_1,p_1',['Многообразие и окружность M_0=S^1(0,',num2str(CR),')']});
+plotCircle(0,0,CR);
+xlabel({'x_1,p_1',['Многообразие и окружность M_0=S^1(0,',num2str(CR),')']});
 ylabel('x_2,p_2');
 DaTa.X=X; DaTa.Y=Y; DaTa.Z=Z; DaTa.f_z=f_z; 
 DaTa.CR=CR;
@@ -117,7 +118,8 @@ y=x1;
 
 % Построение гарфика коэф. проп 1 карты
 axes(handles.axes6)
-plot(y,a);grid on;xlabel({'y','Коэф. пропорциональности ','для карты (U_{1},\phi_{1})'});
+plot(y,a);grid on;
+xlabel({'y','Коэф. пропорциональности ','для карты (U_{1},\phi_{1})'});
 ylabel('\alpha(y)');
 %% Построение функции в координатном пространстве {G1(y),y}
 axes(handles.axes8)
@@ -129,7 +131,7 @@ G1=6.*p1.^2-5.*p1.*p2+2.*p2.^2+p1.^3;
 plot(y,G1);grid on;
 xlabel({'y','График функции F(p)',' в координатах карты (U_{1},\phi_{1})'});
 ylabel('G_1(y)');
-hold on
+
 
 
 %% Ф-я в локальных координатах карты 2
@@ -186,27 +188,7 @@ DaTa.y=y; DaTa.z=z;
 DaTa.G1=G1; DaTa.G2=G2;
 save('DaTa.mat','DaTa');
 
-%% 
-% Функция для задания 3
-% x_range=-1:0.05:1;
-% y_range=-1:0.05:1;
-% [p31,p32] = meshgrid(x_range,y_range);
 
-% f3=p31.^3.*p32+p32.^2.*p31-p32.^5;
-% % f3=6.*p31.^2-5.*p31.*p32+2.*p32.^2+3.*p31.^3;
-% axes(handles.axes5)
-% mesh(p31,p32,f3,'UIContextMenu',f2pCM2);
-% xlabel('График функции F(p)                     ')
-
-% DaTa.X=X;
-% DaTa.Y=Y;
-% DaTa.Z=Z;
-
-% save('DaTa.mat','DaTa');
-
-
-% UIWAIT makes kras_lab1_main2 wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
 
 function plotCircle (xc, yc, R)
 plot(xc + R * cos(0:0.001:2*pi), yc + R * sin(0:0.001:2*pi));
@@ -235,21 +217,93 @@ function Untitled_6_Callback(hObject, eventdata, handles,X)
 load('DaTa.mat');
 figure(1)
 contour(DaTa.X,DaTa.Y,DaTa.Z,[DaTa.f_z DaTa.f_z]);grid on;hold on;
-plotCircle(0,0,DaTa.CR);xlabel(['Многообразие и окружность M_0=S^1(0,',num2str(DaTa.CR),')']);
+plotCircle(0,0,DaTa.CR);
+xlabel({'x_1,p_1',['Многообразие и окружность M_0=S^1(0,',num2str(DaTa.CR),')']});
+ylabel('x_2,p_2');
 
 % ----------------------Puc 2-----------------------------------
 function Untitled_7_Callback(hObject, eventdata, handles)
 load('DaTa.mat');
 figure(2)
-plot(DaTa.y,DaTa.a);grid on;xlabel({'Коэф. пропорциональности ','для карты (U_{1},\phi_{1})'});
+plot(DaTa.y,DaTa.a);grid on;
+xlabel({'y','Коэф. пропорциональности ','для карты (U_{1},\phi_{1})'});
+ylabel('\alpha(y)');
 
-% --------------------------------------------------------------------
+% ---------------------Puc 3-------------------------------------
 function Untitled_8_Callback(hObject, eventdata, handles)
 load('DaTa.mat');
 figure(3)
-plot(DaTa.z,DaTa.b);grid on;xlabel({'Коэф. пропорциональности ','для карты (U_{1},\phi_{1})'});
+plot(DaTa.z,DaTa.b);grid on;xlabel({'z','Коэф. пропорциональности ','для карты (U_{2},\phi_{2})'});
+ylabel('\beta(z)');
 
 % -------------------Theory------------------------
 function Teo_Callback(hObject, eventdata, handles)
 % Открываем док MuPad
 open('Kras_lab1_teo.doc');
+
+
+% ----------------------Puc 4----------------------------------
+function Untitled_9_Callback(hObject, eventdata, handles)
+load('DaTa.mat');
+figure(4)
+plot(DaTa.y,DaTa.G1);grid on;
+xlabel({'y','График функции F(p)',' в координатах карты (U_{1},\phi_{1})'});
+ylabel('G_1(y)');
+
+% ----------------------Puc 5----------------------------------------
+function Untitled_10_Callback(hObject, eventdata, handles)
+load('DaTa.mat');
+figure(5)
+plot(DaTa.z,DaTa.G2);grid on;
+xlabel({'z','График функции F(p)',' в координатах карты (U_{2},\phi_{2})'});
+ylabel('G_2(z)');
+
+
+% -----------------------Puc 6-------------------------------------
+function Untitled_11_Callback(hObject, eventdata, handles)
+load('DaTa.mat');
+figure(6)
+pl1=plot(DaTa.z,DaTa.G2);grid on;hold on;
+plot(DaTa.y,DaTa.G1);
+xlabel({'y,z','Графики f(p)' ,'в коорд. просранствах  (G2(z),z),(G1(y),y)'})
+ylabel('G_1(y),G_2(z)');
+
+
+function Untitled_12_Callback(hObject, eventdata, handles)
+%% Part 2 
+syms x1 x2 x3 t
+% Данная нел дин система
+eq1=x1*tan(x2)-x1^2;
+eq2=log(x2)-x2^2;
+eq3=x1+x2*x3;
+% Нахождение равновесной точки
+% soeq=fsolve(@sysfun,[152. 20 20])
+% return
+soeq=[1 2 -1];
+% Якобиан системы
+J=jacobian([eq1,eq2,eq3],[x1,x2,x3])
+% load('a.mat');
+for i=1:3
+a{i,1}=(int(subs(J(i,1),[x1,x2,x3],[(soeq(1)+t*(x1-soeq(1))) (soeq(2)+t*(x2-soeq(2))) (soeq(3)+t*(x3-soeq(3)))]),t,0,1));
+a{i,2}=(int(subs(J(i,2),[x1,x2,x3],[(soeq(1)+t*(x1-soeq(1))) (soeq(2)+t*(x2-soeq(2))) (soeq(3)+t*(x3-soeq(3)))]),t,0,1));
+a{i,3}=(int(subs(J(i,3),[x1,x2,x3],[(soeq(1)+t*(x1-soeq(1))) (soeq(2)+t*(x2-soeq(2))) (soeq(3)+t*(x3-soeq(3)))]),t,0,1));
+end
+save('a.mat','a');
+x1_=collect(a{1,1}*(x1-soeq(1))+a{1,2}*(x2-soeq(2))+a{1,3}*(x3-soeq(3)),[x1 x2 x3])
+x2_=collect(a{2,1}*(x1-soeq(1))+a{2,2}*(x2-soeq(2))+a{2,3}*(x3-soeq(3)),[x1 x2 x3])
+x3_=collect(a{3,1}*(x1-soeq(1))+a{3,2}*(x2-soeq(2))+a{3,3}*(x3-soeq(3)),[x1 x2 x3])
+
+soeq=floor(soeq)
+
+res=[double(subs(x1_,[x1 x2 x3],soeq)) double(subs(x2_,[x1 x2 x3],soeq)) double(subs(x3_,[x1 x2 x3],soeq))]
+
+preres=[double(subs(eq1,[x1 x2 x3],soeq)) double(subs(eq2,[x1 x2 x3],soeq)) double(subs(eq3,[x1 x2 x3],soeq))]
+
+
+% Данная система нел.ур
+function res=sysfun(x)
+res=[x(1)*tan(x(2))-x(1)^2;
+log(x(2))-x(2)^2;
+x(1)+x(2)*x(3);];
+
+
