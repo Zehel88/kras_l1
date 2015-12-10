@@ -272,28 +272,38 @@ ylabel('G_1(y),G_2(z)');
 function Untitled_12_Callback(hObject, eventdata, handles)
 %% Part 2 
 syms x1 x2 x3 t
-eq1=x1^2+x1*x2*x3;
-eq2=x2^2*sin(3*x1)+x3;
-eq3=x1*cos(x3)-x3^3;
+% Данная нел дин система
+eq1=x1*tan(x2)-x1^2;
+eq2=log(x2)-x2^2;
+eq3=x1+x2*x3;
 % Нахождение равновесной точки
-soeq=fsolve(@sysfun,[-5,-5,-5])
+% soeq=fsolve(@sysfun,[152. 20 20])
+% return
+soeq=[1 2 -1];
 % Якобиан системы
-J=[diff(eq1,x1) diff(eq1,x2) diff(eq1,x3);
-   diff(eq2,x1) diff(eq2,x2) diff(eq2,x3);
-   diff(eq3,x1) diff(eq3,x2) diff(eq3,x3)]
-
+J=jacobian([eq1,eq2,eq3],[x1,x2,x3])
+% load('a.mat');
 for i=1:3
 a{i,1}=(int(subs(J(i,1),[x1,x2,x3],[(soeq(1)+t*(x1-soeq(1))) (soeq(2)+t*(x2-soeq(2))) (soeq(3)+t*(x3-soeq(3)))]),t,0,1));
-a{i,2}=(int(subs(J(i,1),[x1,x2,x3],[(soeq(1)+t*(x1-soeq(1))) (soeq(2)+t*(x2-soeq(2))) (soeq(3)+t*(x3-soeq(3)))]),t,0,1));
-a{i,3}=(int(subs(J(i,1),[x1,x2,x3],[(soeq(1)+t*(x1-soeq(1))) (soeq(2)+t*(x2-soeq(2))) (soeq(3)+t*(x3-soeq(3)))]),t,0,1));
+a{i,2}=(int(subs(J(i,2),[x1,x2,x3],[(soeq(1)+t*(x1-soeq(1))) (soeq(2)+t*(x2-soeq(2))) (soeq(3)+t*(x3-soeq(3)))]),t,0,1));
+a{i,3}=(int(subs(J(i,3),[x1,x2,x3],[(soeq(1)+t*(x1-soeq(1))) (soeq(2)+t*(x2-soeq(2))) (soeq(3)+t*(x3-soeq(3)))]),t,0,1));
 end
 save('a.mat','a');
+x1_=collect(a{1,1}*(x1-soeq(1))+a{1,2}*(x2-soeq(2))+a{1,3}*(x3-soeq(3)),[x1 x2 x3])
+x2_=collect(a{2,1}*(x1-soeq(1))+a{2,2}*(x2-soeq(2))+a{2,3}*(x3-soeq(3)),[x1 x2 x3])
+x3_=collect(a{3,1}*(x1-soeq(1))+a{3,2}*(x2-soeq(2))+a{3,3}*(x3-soeq(3)),[x1 x2 x3])
+
+soeq=floor(soeq)
+
+res=[double(subs(x1_,[x1 x2 x3],soeq)) double(subs(x2_,[x1 x2 x3],soeq)) double(subs(x3_,[x1 x2 x3],soeq))]
+
+preres=[double(subs(eq1,[x1 x2 x3],soeq)) double(subs(eq2,[x1 x2 x3],soeq)) double(subs(eq3,[x1 x2 x3],soeq))]
 
 
 % Данная система нел.ур
 function res=sysfun(x)
-res=[x(1)^2+x(1)*x(2)*x(3);
-x(2)^2*sin(3*x(1))+x(3);
-x(1)*cos(x(3))-x(3)^3];
+res=[x(1)*tan(x(2))-x(1)^2;
+log(x(2))-x(2)^2;
+x(1)+x(2)*x(3);];
 
 
